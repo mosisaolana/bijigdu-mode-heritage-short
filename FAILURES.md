@@ -13,3 +13,24 @@
 - **Root Cause:** Outdated model name in the quick test command, not an invalid API key.
 - **Fix / Workaround:** Used current `gemini-3.8-flash` family models (`gemini-3.8-flash-tts` for narration).
 - **Takeaway:** Keep model names current and document API/model quirks right away.
+
+## Failure 3: Transient Rate Limit During 10-Shot Narration Batch (`shot_08`–`shot_10`)
+- **Stage / Script:** Phase 1 Narration (`pipeline/narration.py`)
+- **Symptom:** Running `pipeline/narration.py` across all 10 shots stopped after generating `shot_01.wav` through `shot_07.wav`, leaving `shot_08`, `shot_09`, and `shot_10` ungenerated.
+- **Root Cause:** API request-per-minute throttling / transient interruption mid-batch.
+- **Fix / Workaround:** Leveraged `.wav.cachekey` caching to skip the 7 completed shots and re-ran `python pipeline/narration.py --shots shot_08 shot_09 shot_10` to complete the remaining audio files cleanly.
+- **Takeaway:** Per-shot hash caching prevents wasted API calls and allows clean recovery from mid-batch rate limits.
+
+## Failure 4: `FileNotFoundError: [WinError 2]` in `pipeline/radio_cut.py` (Missing FFmpeg)
+- **Stage / Script:** Phase 1 Radio Cut (`pipeline/radio_cut.py`)
+- **Symptom:** Running `python pipeline/radio_cut.py` failed on `subprocess.run(...)` with `FileNotFoundError: [WinError 2] The system cannot find the file specified`.
+- **Root Cause:** `ffmpeg.exe` was not installed or registered on the Windows `PATH`.
+- **Fix / Workaround:** Installed FFmpeg on Windows and refreshed the PowerShell session `PATH` before re-running `radio_cut.py`.
+- **Takeaway:** Document `ffmpeg` as an explicit system prerequisite in `README.md`.
+
+## Failure 5: `winget install` Hanging on Interactive `msstore` Source Agreement Prompt
+- **Stage / Script:** Environment Setup (Installing `Gyan.FFmpeg`)
+- **Symptom:** Running `winget install --id=Gyan.FFmpeg -e` stalled at `Do you agree to all the source agreements terms?` even after typing `Y` and pressing Enter.
+- **Root Cause:** `winget` defaults to querying the `msstore` source and waiting on interactive agreement confirmation/catalog refresh.
+- **Fix / Workaround:** Passed `--source winget --accept-source-agreements --accept-package-agreements` to bypass the `msstore` prompt and install cleanly.
+- **Takeaway:** Use non-interactive flags (`--source winget --accept-source-agreements --accept-package-agreements`) when scripting or documenting Windows package installs.
