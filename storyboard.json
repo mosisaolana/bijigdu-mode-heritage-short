@@ -1,0 +1,134 @@
+﻿{
+  "project_title": "Bijigdu Mode: The Generous Governor",
+  "language": "am",
+  "target_duration_seconds": 75,
+  "character_ref": {
+    "name": "Bijigdu Mode",
+    "role": "District Governor",
+    "description": "Dignified Ethiopian woman district governor seated upright on a sturdy mule, wearing traditional woven attire and a commanding yet warm expression, centered in frame.",
+    "reference_image_path": "outputs/refs/bijigdu_mode_sheet.png"
+  },
+  "style_block": "Cinematic documentary film still, warm natural daylight, rich earthy tones, subtle film grain, authentic rural-town street atmosphere, crisp focus, no text or watermarks in image.",
+  "shots": [
+    {
+      "shot_id": "shot_01",
+      "duration_sec": 7,
+      "shot_type": "Establishing wide shot",
+      "reason": "Establish the town road, Bijigdu Mode on her mule, and her full eight-guard formation.",
+      "image_prompt": "Bijigdu Mode riding a mule along a town road, two guards walking ahead in front, two guards behind, three guards on her left side, and three guards on her right side carrying older Kalashnikov rifles slung or held calmly.",
+      "motion_prompt": "Slow gentle forward dolly along the dusty road; guards walk steadily with subtle fabric movement.",
+      "narration_am": "ቢጅግዱ ሞዴ የወረዳ አስተዳዳሪ ነበሩ፤ በበቅሎ ተቀምጠው በከተማዋ መንገድ ሲያልፉ ክብራቸው ጎልቶ ይታያል።",
+      "subtitles_en": "Bijigdu Mode was a district governor; as she rode her mule through town, her dignity stood out.",
+      "music_cue": "intro_swell_warm",
+      "seed": 101
+    },
+    {
+      "shot_id": "shot_02",
+      "duration_sec": 7,
+      "shot_type": "Medium shot",
+      "reason": "Introduce Bijigdu Mode's calm authority and presence on the mule.",
+      "image_prompt": "Medium shot of Bijigdu Mode seated upright and calm on a mule in the center of the frame, traditional shawl draped neatly, warm afternoon light.",
+      "motion_prompt": "Subtle gentle head turn and mule rhythmic step; camera holds steady with very slight push-in.",
+      "narration_am": "ፊታቸው የተረጋጋና ቀጥ ያለ ነበር፤ መምጣታቸው በከተማዋ ውስጥ ልዩ ስሜት ይፈጥራል።",
+      "subtitles_en": "Her face was calm and composed; her arrival stirred a distinct feeling across town.",
+      "music_cue": "underscore_gentle_pulse",
+      "seed": 102
+    },
+    {
+      "shot_id": "shot_03",
+      "duration_sec": 7,
+      "shot_type": "Medium wide shot",
+      "reason": "Show the front and flank guard arrangement clearly without visual clutter.",
+      "image_prompt": "Medium wide view of Bijigdu Mode on her mule with two guards ahead leading the way and three guards walking along her left flank with older Kalashnikov rifles.",
+      "motion_prompt": "Slow lateral track keeping Bijigdu Mode centered; footsteps and gentle breeze in clothing.",
+      "narration_am": "ከፊት ሁለት ጠባቂዎች፣ ከኋላ ሁለት ጠባቂዎች፣ በግራ ሶስት እና በቀኝ ሶስት ጠባቂዎች በአሮጌ ክላሽንኮቭ ታጅበው ይጓዛሉ።",
+      "subtitles_en": "Two guards ahead, two behind, three on the left and three on the right with older Kalashnikovs.",
+      "music_cue": "underscore_rhythm_steady",
+      "seed": 103
+    },
+    {
+      "shot_id": "shot_04",
+      "duration_sec": 7,
+      "shot_type": "Insert / cut-in",
+      "reason": "Ground the era and texture through a clean detail of vintage equipment and path.",
+      "image_prompt": "Close medium shot of a worn leather strap and older Kalashnikov rifle carried by a guard walking beside the mule on a packed earth road.",
+      "motion_prompt": "Slow pan across the strap and dust on the path; minimal motion.",
+      "narration_am": "መሳሪያዎቹ የዘመኑን ታሪክ ያስታውሳሉ፤ ነገር ግን ኃይላቸው ለፍርሃት ሳይሆን ለስርዓት ነበር።",
+      "subtitles_en": "The rifles recalled the history of the era, yet stood for order rather than fear.",
+      "music_cue": "underscore_low_drone",
+      "seed": 104
+    },
+    {
+      "shot_id": "shot_05",
+      "duration_sec": 8,
+      "shot_type": "Medium wide shot",
+      "reason": "Show townspeople lining the street as the procession passes.",
+      "image_prompt": "Townspeople standing along both sides of a bustling street watching Bijigdu Mode pass on her mule surrounded by her guards, warm expressions.",
+      "motion_prompt": "Gentle camera pan toward smiling onlookers; people wave and call out warmly.",
+      "narration_am": "የከተማዋ ሰዎች በመንገዱ ዳር ተሰብስበው በደስታ ይመለከቷቸዋል፤ ድምፃቸውም በመንገዱ ይሰማል።",
+      "subtitles_en": "Townspeople lined the road watching her gladly, their voices rising along the street.",
+      "music_cue": "underscore_lift_warm",
+      "seed": 105
+    },
+    {
+      "shot_id": "shot_06",
+      "duration_sec": 8,
+      "shot_type": "Medium shot",
+      "reason": "Capture the communal chant and warmth of the crowd.",
+      "image_prompt": "Medium shot of local residents chanting together with open, joyful faces along the street edge during a daytime procession.",
+      "motion_prompt": "Subtle handheld feel with gentle movement as residents chant in unison.",
+      "narration_am": "ለጋስነታቸውን በማስታወስ ህዝቡ በአንድነት እየተቀባበለ ያመሰግናቸዋል፤ ዝማሬው የልብ ምስጋና ነበር።",
+      "subtitles_en": "Remembering her generosity, the people chanted together in gratitude from the heart.",
+      "music_cue": "theme_call_response",
+      "seed": 106
+    },
+    {
+      "shot_id": "shot_07",
+      "duration_sec": 8,
+      "shot_type": "Close-up",
+      "reason": "Show Bijigdu Mode's quiet, humane response to the people's chant.",
+      "image_prompt": "Close-up of Bijigdu Mode on her mule, gentle acknowledging nod and warm, measured expression as she listens to the crowd.",
+      "motion_prompt": "Very slow push-in and a gentle nod; soft natural light on her face.",
+      "narration_am": "እርሳቸውም በትህትና እና በአክብሮት ምላሽ ይሰጣሉ፤ ቃላቸው እና ተግባራቸው ለብዙዎች መጠለያ ነበር።",
+      "subtitles_en": "She answered with humility and grace; her word and deeds were shelter to many.",
+      "music_cue": "theme_intimate_strings",
+      "seed": 107
+    },
+    {
+      "shot_id": "shot_08",
+      "duration_sec": 8,
+      "shot_type": "Wide shot",
+      "reason": "Show the procession moving through the town street with onlookers.",
+      "image_prompt": "Wide street view of Bijigdu Mode on her mule flanked by guards on front, back, left, and right while townsfolk gather along the roadside.",
+      "motion_prompt": "Smooth slow crane or wide glide along the street as the group moves forward.",
+      "narration_am": "በእያንዳንዱ እርምጃ የአስተዳደር ክብር እና የህዝብ ፍቅር አብረው ይጓዛሉ።",
+      "subtitles_en": "With every step, the weight of office and the affection of the people walked together.",
+      "music_cue": "theme_build",
+      "seed": 108
+    },
+    {
+      "shot_id": "shot_09",
+      "duration_sec": 8,
+      "shot_type": "Medium shot",
+      "reason": "Reinforce why she was remembered—generosity in action.",
+      "image_prompt": "Bijigdu Mode seated on her mule looking ahead along the sunlit road with her escort formation around her, calm and resolute.",
+      "motion_prompt": "Gentle steady forward movement; warm light shifting slightly across the scene.",
+      "narration_am": "ስሟ በታሪክ የቀረው በስልጣን ብቻ ሳይሆን በቸርነት እና በፍትሃዊነት ስለተለየች ነው።",
+      "subtitles_en": "Her name endured not from authority alone, but from generosity and fairness.",
+      "music_cue": "theme_peak_gentle",
+      "seed": 109
+    },
+    {
+      "shot_id": "shot_10",
+      "duration_sec": 7,
+      "shot_type": "Wide shot with fade",
+      "reason": "Close the narrative arc cleanly before the end card.",
+      "image_prompt": "Bijigdu Mode on her mule and her escort continuing down the sunlit road toward the distance, warm golden-hour atmosphere.",
+      "motion_prompt": "Slow receding or holding wide shot leading smoothly into a fade out.",
+      "narration_am": "የቢጅግዱ ሞዴ ታሪክ ለትውልድ የሚተላለፍ የክብር እና የልግስና ትዝታ ነው።",
+      "subtitles_en": "The story of Bijigdu Mode remains a memory of honor and generosity passed down.",
+      "music_cue": "outro_resolve",
+      "seed": 110
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HeritageShortStoryboard",
+  "type": "object",
+  "required": [
+    "project_title",
+    "language",
+    "target_duration_seconds",
+    "character_ref",
+    "style_block",
+    "shots"
+  ],
+  "properties": {
+    "project_title": { "type": "string", "minLength": 1 },
+    "language": { "type": "string", "minLength": 2 },
+    "target_duration_seconds": { "type": "number", "minimum": 60, "maximum": 90 },
+    "character_ref": {
+      "type": "object",
+      "required": ["name", "role", "description", "reference_image_path"],
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "description": { "type": "string" },
+        "reference_image_path": { "type": "string" }
+      }
+    },
+    "style_block": { "type": "string", "minLength": 10 },
+    "shots": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": [
+          "shot_id",
+          "duration_sec",
+          "shot_type",
+          "reason",
+          "image_prompt",
+          "motion_prompt",
+          "narration_am",
+          "subtitles_en",
+          "music_cue",
+          "seed"
+        ],
+        "properties": {
+          "shot_id": { "type": "string" },
+          "duration_sec": { "type": "number", "minimum": 4, "maximum": 12 },
+          "shot_type": { "type": "string" },
+          "reason": { "type": "string" },
+          "image_prompt": { "type": "string" },
+          "motion_prompt": { "type": "string" },
+          "narration_am": { "type": "string" },
+          "subtitles_en": { "type": "string" },
+          "music_cue": { "type": "string" },
+          "seed": { "type": "integer" }
+        }
+      }
+    }
+  }
+}
