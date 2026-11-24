@@ -34,3 +34,10 @@
 - **Root Cause:** `winget` defaults to querying the `msstore` source and waiting on interactive agreement confirmation/catalog refresh.
 - **Fix / Workaround:** Passed `--source winget --accept-source-agreements --accept-package-agreements` to bypass the `msstore` prompt and install cleanly.
 - **Takeaway:** Use non-interactive flags (`--source winget --accept-source-agreements --accept-package-agreements`) when scripting or documenting Windows package installs.
+
+## Failure 6: `winget` Download Timeout (`InternetReadFile() failed. 0x80072ee2`)
+- **Stage / Script:** Environment Setup (Installing `Gyan.FFmpeg` Version 9.1)
+- **Symptom:** `winget` resolved `Gyan.FFmpeg` Version 9.1 and began downloading `ffmpeg-9.1-full_build.zip` from GitHub, then failed with `InternetReadFile() failed. 0x80072ee2 : unknown error`.
+- **Root Cause:** Network timeout or interrupted connection in `winget`'s built-in downloader while retrieving the large release archive from GitHub.
+- **Fix / Workaround:** Download the FFmpeg release archive directly via browser or `curl` with retry/resumable transfer, extract `ffmpeg.exe` to a local folder (such as `C:\ffmpeg`), and add its `bin` directory to `PATH`.
+- **Takeaway:** Keep a direct download fallback ready when `winget` times out on large external release archives.
