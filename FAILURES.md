@@ -41,3 +41,10 @@
 - **Root Cause:** Network timeout or interrupted connection in `winget`'s built-in downloader while retrieving the large release archive from GitHub.
 - **Fix / Workaround:** Download the FFmpeg release archive directly via browser or `curl` with retry/resumable transfer, extract `ffmpeg.exe` to a local folder (such as `C:\ffmpeg`), and add its `bin` directory to `PATH`.
 - **Takeaway:** Keep a direct download fallback ready when `winget` times out on large external release archives.
+
+## Failure 9: `429 RESOURCE_EXHAUSTED` on `gemini-3.8-flash-tts` Free Tier Daily Limit (10 RPD)
+- **Stage / Script:** Phase 1 Narration Regeneration (`pipeline/narration.py` -> `pipeline/radio_cut.py`)
+- **Symptom:** After deleting cached `.wav` files to regenerate narration with updated storyboard text, `narration.py` failed on `shot_03` with `429 RESOURCE_EXHAUSTED` (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, limit `10`), causing `radio_cut.py` to fail with `Missing narration file: outputs\audio\shot_03.wav`.
+- **Root Cause:** Free Tier daily request quota (`10` requests/day) on `gemini-3.8-flash-tts` was exhausted after earlier runs and full regeneration attempts.
+- **Fix / Workaround:** Wait for the quota reset window (~87 minutes), switch to a project/key with available quota, or advance non-TTS work (such as `FAILURES.md` logging, Git commits, and Phase 2 keyframe generation) while waiting, then re-run `python pipeline/narration.py` and `python pipeline/radio_cut.py`.
+- **Takeaway:** Avoid wiping all cached `.wav` files unnecessarily when daily TTS request caps are tight, and batch/verify shots carefully before regenerating.
