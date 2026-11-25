@@ -1,18 +1,17 @@
-﻿# Ethics, Consent, Licensing & Provenance
+﻿# Ethics, Consent, Licences & AI Labelling
 
-## Consent Record (Before Generation)
-- **Subject:** Bijigdu Mode (family historical figure, depicted via stylized AI imagery rather than voice cloning of a living person).
-- **Family / Narrator Consent:** [Record family permission / narrator consent date and scope before generating assets].
-- **Likeness & Voice Policy:** No voice cloning of any living person without explicit recorded consent.
+## 1. Consent Record (Likeness, Photo & Voice)
+- **Historical Figure & Likeness**: Emebet Bijigdu Mode (Governor of Guduru Malole Warada, Wellega Awraja). Historical photograph (`Bijigdu picture.jpg`, archived at `outputs/refs/bijigdu_actual.jpg`) and AI-generated keyframes depicting her traditional regalia (*Kaba*, *Zinar*, pistol) and silver-chained mule.
+- **Consent & Family Permission**: [Add who gave informed consent/permission from your family or stakeholders to depict Emebet Bijigdu Mode's likeness, photograph, and family history, and when that consent was confirmed.]
+- **Narration Voice**: Amharic narration is synthesized via text-to-speech (`pipeline/narration.py`), not cloned from a living or real person's voice.
 
-## Model Licences & Terms
-- **Script & Narration:** Gemini 3.8 Flash / Flash TTS (Google AI Studio free tier; check terms regarding private family details).
-- **Keyframes:** FLUX.2 klein / FLUX.1 schnell via Cloudflare Workers AI (note model-specific licence, e.g., Apache 2.0 for 4B vs non-commercial for 9B).
-- **Moving Shots:** Wan 2.2 TI2V-5B (Apache 2.0) on Kaggle 2x T4.
-- **Music:** ACE-Step 1.5 (MIT licence; outputs usable commercially).
-- **Assembly:** FFmpeg (LGPL/GPL local CLI).
+## 2. Model & Tool Licences
+- **Keyframe Image Model (`@cf/black-forest-labs/flux-1-schnell`)**: Called via Cloudflare Workers AI; verify and note the exact Black Forest Labs / Cloudflare licence terms for your usage.
+- **Narration TTS**: [Add exact TTS model name/provider and terms used in `pipeline/narration.py`.]
+- **Video & Audio Assembly (`FFmpeg 9.1` with `libass`, `libx264`, `aac`)**: Open-source / GPL tooling; check distribution terms for any bundled binaries or scripts.
+- **Repository Code & Storyboard**: [Add your chosen repository licence, e.g., MIT or Apache-2.0.]
 
-## Labelling & Provenance
-- Visible end card stating the film was generated with AI.
-- Platform AI disclosure label switched ON when publishing.
-- Retain provenance metadata (`SynthID`, `C2PA`) where emitted by providers.
+## 3. AI Labelling & Provenance Plan
+- **Burned-In End Card**: Both `9:16` and `16:9` exports include a visible 2.5-second end card (`Made with AI - Heritage Short Pipeline`) generated in `pipeline/assemble.py`.
+- **Platform Disclosure**: When publishing the film publicly, switch on the platform's native AI-generated/altered content label (e.g., YouTube, TikTok, Meta, or your hosting platform).
+- **Provenance & Privacy**: Retain output metadata where possible and keep private family details and API secrets out of the public repository.
