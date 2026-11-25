@@ -1,22 +1,40 @@
-﻿# Design Thinking & Audience Log
+﻿# DESIGN.md — Emebet Bijigdu Mode (75s Heritage Short)
 
-## Audience & Viewing Context
-- **Primary Audience:** Family members and Amharic-speaking viewers who value Ethiopian heritage, leadership, and community memory.
-- **Viewing Context:** Mobile feeds (`9:16` vertical) and desktop/web (`16:9` horizontal), narrated in Amharic with English subtitles.
-- **Intended Feeling & Takeaway:** Pride, warmth, and reverence—showing how Bijigdu Mode earned people's chants through generosity rather than fear.
+## 1. Creative Vision & Target Audience
+- **Subject:** Emebet Bijigdu Mode (`እመቤት ቢጅግዱ ሞዴ`), a revered and generous district governor remembered in living family and civic history.
+- **Target Audience:** Ethiopian heritage audiences, younger generations connecting with oral history, and viewers of short-form cultural documentaries.
+- **Viewing Context:** Mobile and desktop short-form heritage storytelling (75 seconds, 10 shots) anchored by expressive Amharic narration, period-authentic keyframes, subtle motion, and an atmospheric score.
+- **Core Emotional Takeaway:** By the end of the film, viewers should feel the rare combination of dignified civic authority and open-handed generosity that defined Emebet Bijigdu Mode's leadership.
 
-## User Test 1: Radio Cut (Narration + Placeholder Music)
-- **Date:** 2026-11-24
-- **Participants (≥ 3 from target audience):**
-  1. [Name / Relationship] — Feedback:
-  2. [Name / Relationship] — Feedback:
-  3. [Name / Relationship] — Feedback:
-- **What Changed in `storyboard.json`:**
+---
 
-## User Test 2: Near-Final Cut
-- **Date:** 2026-11-26
-- **Participants (≥ 3 from target audience):**
-  1. [Name / Relationship] — Feedback:
-  2. [Name / Relationship] — Feedback:
-  3. [Name / Relationship] — Feedback:
-- **What Changed in `storyboard.json`:**
+## 2. Audience Test #1 — Radio Cut (`outputs/final/radio_cut.mp4`)
+
+### Test Setup
+- **Format Tested:** 75-second assembled Amharic narration radio cut (`radio_cut.mp4`) played end to end before generating final visuals.
+- **Participants:** 3 listeners, including a direct primary family source (Emebet Bijigdu Mode's daughter) and 2 general heritage listeners.
+
+### Listener Feedback
+- **Audience 1 (Daughter of Emebet Bijigdu Mode):**
+  - *Title of Honor:* Recommended addressing her as **"Emebet Bijigdu Mode"** (`እመቤት ቢጅግዱ ሞዴ`) rather than simply "Bijigdu Mode," reflecting the honor and respect she held as governor across the entire city.
+  - *Regalia & Armament:* Noted that she wore a traditional ceremonial cloak (**"Kaba"** / ካባ), a full ammunition belt (**"Zinar"** / ዝናር), and her own **pistol**.
+  - *Mule & Acoustic Signature:* Her mule was decorated with **silver chains** whose melodic chiming alerted townspeople whenever Emebet Bijigdu Mode was passing through the city.
+  - *Tangible Generosity:* Townsfolk facing financial or life hardship could approach her freely and receive **one cow and one ox** to multiply and rebuild a stable livelihood, supplemented with traditional Ethiopian currency (**"Xegera"** / ጠገራ ብር).
+- **Audience 2 (General Listener):**
+  - Responded emotionally to the narration and clearly understood Emebet Bijigdu Mode's generosity and standing.
+- **Audience 3 (General Listener):**
+  - Shared the same emotional resonance as Audience 2, confirming that the 75-second story arc and emotional tone land effectively.
+
+---
+
+## 3. Storyboard, Narration & Visual Revisions Before Phase 2
+
+### Narration & Script Updates (`storyboard.json` -> `narration.py`)
+1. **Honorific Consistency:** Update references from "Bijigdu Mode" to **"Emebet Bijigdu Mode"** (`እመቤት ቢጅግዱ ሞዴ`) across the Amharic narration script.
+2. **Specifics of Generosity:** Incorporate her open-door support for struggling citizens—granting **one cow and one ox** to establish self-sustaining livelihoods alongside **Xegera** (`ጠገራ`) currency—while keeping total runtime within the 75-second budget.
+
+### Visual & Audio Design Updates (`storyboard.json` -> Phase 2 Keyframes, Motion & Score)
+1. **Costume & Prop Continuity:** Update character visual prompts so Emebet Bijigdu Mode wears a ceremonial **Kaba**, a **Zinar** ammunition belt, and her personal **pistol**.
+2. **Ceremonial Mule Detail:** Depict her mule adorned with **ornate silver chains** in city procession shots.
+3. **Foley / Score Cue:** Layer a subtle **metallic silver-chain chime** into the procession sound design so viewers hear her arrival the way townspeople did.
+4. **Pacing Preservation:** Retain the overall 10-shot rhythm and emotional cadence validated by Listeners 2 and 3.
