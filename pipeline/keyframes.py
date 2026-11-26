@@ -1,11 +1,13 @@
 ﻿import argparse
 import base64
+import hashlib
 import json
 import os
 from pathlib import Path
 import sys
 import urllib.error
 import urllib.request
+import uuid
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -14,34 +16,28 @@ if str(ROOT) not in sys.path:
 from pipeline.common import load_json, run_cached_stage_item, validate_storyboard
 
 DEFAULT_MODEL = "@cf/black-forest-labs/flux-1-schnell"
+DEFAULT_REF_MODEL = "@cf/black-forest-labs/flux-2-klein-9b"
 
 
-def _call_workers_ai_image(
-    account_id: str,
-    api_token: str,
-    model: str,
-    prompt: str,
-    steps: int = 4,
-) -> bytes:
-    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{model}"
-    payload = json.dumps({"prompt": prompt, "steps": steps}).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {api_token}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            content_type = resp.headers.get("Content-Type", "")
-            raw = resp.read()
-    except urllib.error.HTTPError as exc:
-        err_body = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Cloudflare Workers AI HTTP {exc.code}: {err_body}") from exc
+def _build_multipart_body(fields: dict[str, str], files: dict[str, tuple[str, bytes, str]]) -> tuple[bytes, str]:
+    boundary = f"----CodexBoundary{uuid.uuid4().hex}"
+    chunks: list[bytes] = []
+    for name, value in fields.items():
+        chunks.append(f"--{boundary}\r\n".encode("utf-8"))
+        chunks.append(f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode("utf-8"))
+        chunks.append(str(value).encode("utf-8") + b"\r\n")
+    for name, (filename, data, content_type) in files.items():
+        chunks.append(f"--{boundary}\r\n".encode("utf-8"))
+        chunks.append(
+            f'Content-Disposition: form-data; name="{name}"; filename="{filename}"\r\n'
+            f"Content-Type: {content_type}\r\n\r\n".encode("utf-8")
+        )
+        chunks.append(data + b"\r\n")
+    chunks.append(f"--{boundary}--\r\n".encode("utf-8"))
+    return b"".join(chunks), f"multipart/form-data; boundary={boundary}"
 
+
+def _decode_image_response(raw: bytes, content_type: str) -> bytes:
     if "application/json" in content_type:
         data = json.loads(raw.decode("utf-8"))
         if not data.get("success", True):
@@ -51,14 +47,61 @@ def _call_workers_ai_image(
         if not b64:
             raise RuntimeError(f"No image field in JSON response: {list(result.keys())}")
         return base64.b64decode(b64)
-
     return raw
+
+
+def _call_workers_ai_image(
+    account_id: str,
+    api_token: str,
+    model: str,
+    prompt: str,
+    steps: int = 4,
+    ref_image_path: Path | None = None,
+    seed: int | None = None,
+) -> bytes:
+    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{model}"
+
+    if ref_image_path is not None or "flux-2" in model:
+        fields: dict[str, str] = {
+            "prompt": prompt,
+            "width": "1024",
+            "height": "1024",
+        }
+        if seed is not None:
+            fields["seed"] = str(seed)
+        files: dict[str, tuple[str, bytes, str]] = {}
+        if ref_image_path is not None:
+            files["input_image_0"] = (ref_image_path.name, ref_image_path.read_bytes(), "image/png")
+        body, content_type = _build_multipart_body(fields, files)
+    else:
+        body = json.dumps({"prompt": prompt, "steps": steps}).encode("utf-8")
+        content_type = "application/json"
+
+    req = urllib.request.Request(
+        url,
+        data=body,
+        headers={
+            "Authorization": f"Bearer {api_token}",
+            "Content-Type": content_type,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            resp_ct = resp.headers.get("Content-Type", "")
+            raw = resp.read()
+    except urllib.error.HTTPError as exc:
+        err_body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Cloudflare Workers AI HTTP {exc.code}: {err_body}") from exc
+
+    return _decode_image_response(raw, resp_ct)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate reference sheet and shot keyframes via Cloudflare Workers AI.")
     parser.add_argument("--storyboard", default="storyboard.json", help="Path to storyboard.json")
-    parser.add_argument("--model", default=DEFAULT_MODEL, help="Cloudflare Workers AI image model")
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="Cloudflare Workers AI text-to-image model")
+    parser.add_argument("--ref-model", default=DEFAULT_REF_MODEL, help="Cloudflare Workers AI reference-conditioned model")
     parser.add_argument("--steps", type=int, default=4, help="Diffusion steps (1-8 for flux-1-schnell)")
     parser.add_argument("--only", default=None, help="Generate only 'ref' or a specific shot_id (e.g. shot_01)")
     args = parser.parse_args()
@@ -111,22 +154,54 @@ def main() -> None:
         full_prompt = f"{shot['image_prompt'].strip()} {style_block}".strip()
         seed = shot.get("seed")
 
-        def _gen_shot(p: str = full_prompt, out: Path = out_path) -> dict:
-            img_bytes = _call_workers_ai_image(account_id, api_token, args.model, p, steps=args.steps)
+        shot_ref_str = shot.get("reference_image_path")
+        shot_ref_path = Path(shot_ref_str) if shot_ref_str else None
+        if shot_ref_path is not None:
+            if not shot_ref_path.exists():
+                raise FileNotFoundError(f"Reference image not found for {shot_id}: {shot_ref_path}")
+            active_model = args.ref_model
+            ref_hash = hashlib.sha256(shot_ref_path.read_bytes()).hexdigest()[:16]
+            cache_payload = {
+                "prompt": full_prompt,
+                "model": active_model,
+                "ref_image": str(shot_ref_path),
+                "ref_hash": ref_hash,
+                "seed": seed,
+            }
+        else:
+            active_model = args.model
+            cache_payload = {"prompt": full_prompt, "steps": args.steps, "model": active_model}
+
+        def _gen_shot(
+            p: str = full_prompt,
+            out: Path = out_path,
+            m: str = active_model,
+            r_path: Path | None = shot_ref_path,
+            s: int | None = seed,
+        ) -> dict:
+            img_bytes = _call_workers_ai_image(
+                account_id,
+                api_token,
+                m,
+                p,
+                steps=args.steps,
+                ref_image_path=r_path,
+                seed=s,
+            )
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(img_bytes)
-            return {"bytes": len(img_bytes)}
+            return {"bytes": len(img_bytes), "ref": str(r_path) if r_path else None}
 
         res = run_cached_stage_item(
             stage="keyframe",
             shot_id=shot_id,
-            model=args.model,
-            cache_payload={"prompt": full_prompt, "steps": args.steps, "model": args.model},
+            model=active_model,
+            cache_payload=cache_payload,
             output_path=out_path,
             fn=_gen_shot,
             seed=seed,
         )
-        print(f"[{shot_id}] {out_path} -> cached={res['cached']}")
+        print(f"[{shot_id}] {out_path} ({active_model}) -> cached={res['cached']}")
 
 
 if __name__ == "__main__":
