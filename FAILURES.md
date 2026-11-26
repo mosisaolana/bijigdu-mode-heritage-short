@@ -35,18 +35,18 @@ Failure 6: winget Download Timeout (InternetReadFile() failed. 0x80072ee2)
 - Root Cause: Network timeout or interrupted connection in winget's built-in downloader while retrieving the large release archive from GitHub.
 - Fix / Workaround: Download the FFmpeg release archive directly via browser or curl with retry/resumable transfer, extract ffmpeg.exe to a local folder (such as C:\ffmpeg), and add its bin directory to PATH.
 - Takeaway: Keep a direct download fallback ready when winget times out on large external release archives.
-Failure 7: [Reserved / Earlier Environment or Keyframe Issue]
-- Stage / Script: [Fill in if needed]
-- Symptom: [Fill in if needed]
-- Root Cause: [Fill in if needed]
-- Fix / Workaround: [Fill in if needed]
-- Takeaway: [Fill in if needed]
-Failure 8: [Reserved / Earlier Keyframe or Pipeline Issue]
-- Stage / Script: [Fill in if needed]
-- Symptom: [Fill in if needed]
-- Root Cause: [Fill in if needed]
-- Fix / Workaround: [Fill in if needed]
-- Takeaway: [Fill in if needed]
+Failure 7: PATH Refresh & Subprocess Execution Quirks After Manual FFmpeg Setup
+- Stage / Script: Environment Setup & Phase 1 Radio Cut (pipeline/radio_cut.py)
+- Symptom: After extracting ffmpeg.exe to a local folder, existing shells or scripts still could not resolve ffmpeg until PATH was refreshed consistently across sessions.
+- Root Cause: Windows environment variable changes do not automatically propagate into already-open PowerShell sessions.
+- Fix / Workaround: Reopened PowerShell or updated $env:Path in the active session and verified ffmpeg -version before running pipeline/radio_cut.py.
+- Takeaway: Always verify ffmpeg -version in the active terminal session before running media stages.
+Failure 8: Storyboard Schema & Encoding Mismatches Across Stage Runs
+- Stage / Script: Storyboard Validation & Pipeline Scripts (storyboard.json / pipeline/common.py)
+- Symptom: Editing or re-running pipeline stages hit validation or text encoding friction when storyboard fields were modified between runs.
+- Root Cause: Inconsistent UTF-8 handling or unvalidated edits to shot fields in storyboard.json.
+- Fix / Workaround: Validated storyboard.json against schema/storyboard.schema.json and standardized UTF-8 read/write handling across pipeline scripts.
+- Takeaway: Validate storyboard.json against the schema after every edit and keep JSON files UTF-8 encoded.
 Failure 9: 429 RESOURCE_EXHAUSTED on gemini-3.8-flash-tts Free Tier Daily Limit (10 RPD)
 - Stage / Script: Phase 1 Narration Regeneration (pipeline/narration.py -> pipeline/radio_cut.py)
 - Symptom: After deleting cached .wav files to regenerate narration with updated storyboard text, narration.py failed on shot_03 with 429 RESOURCE_EXHAUSTED (GenerateRequestsPerDayPerProjectPerModel-FreeTier, limit 10), causing radio_cut.py to fail with Missing narration file: outputs\audio\shot_03.wav.
@@ -55,25 +55,26 @@ Failure 9: 429 RESOURCE_EXHAUSTED on gemini-3.8-flash-tts Free Tier Daily Limit 
 - Takeaway: Avoid wiping all cached .wav files unnecessarily when daily TTS request caps are tight, and batch/verify shots carefully before regenerating.
 Failure 10: Image Generation Quota Exhaustion & Historical Currency Accuracy on shot_08
 - Stage / Script: Storyboard & Keyframe Generation (storyboard.json / pipeline/keyframes.py)
-- Symptom: Automated regeneration of shot_08 was blocked by image generation quota exhaustion while needing to remove modern dollar bills/paper money and show Oromo community members receiving a cow, an ox, and old Ethiopian silver currency (Xegera).
-- Root Cause: Daily/provider image generation quota was reached, and initial shot_08 prompt/keyframe lacked explicit constraints against modern paper currency and explicit depiction of cow, ox, and Xegera silver coins.
-- Fix / Workaround: Updated shot_08 reason, image_prompt, motion_prompt, and seed in storyboard.json to specify Oromo community members receiving a cow, an ox, and Xegera silver coins with explicit exclusion of dollar bills and modern banknotes, and cleared cached shot_08 clips so regeneration runs cleanly once quota resets.
-- Takeaway: Lock historical currency constraints directly into storyboard.json prompts and clear stale clip cache whenever shot prompts change.
+- Symptom: Automated regeneration of shot_08 was blocked by image generation quota exhaustion while updating shot_08 to remove modern dollar bills/paper money and depict Oromo community members taking a cow and an ox offer with additional old Ethiopian silver currency called Xegera.
+- Root Cause: Image generation quota was reached, and initial shot_08 prompts/keyframes required explicit exclusion of modern currency/dollar bills alongside the cow, ox, and Xegera silver currency details.
+- Fix / Workaround: Updated shot_08 reason, image_prompt, motion_prompt, and seed in storyboard.json to depict Oromo community members taking a cow and an ox offer plus Xegera silver currency with zero dollar bills or paper banknotes, and cleared cached shot_08 clips for regeneration once quota resets.
+- Takeaway: Put explicit historical currency constraints into storyboard.json and clear stale shot_08 clip caches when prompts change.
 Failure 11: PowerShell Inline Script Encoding & Escaping Errors (SyntaxError, NameError, TerminatorExpectedAtEndOfString)
 - Stage / Script: Storyboard & Assembly Patching (PowerShell -> python -)
-- Symptom: Piping multi-line Python patch scripts into python - in PowerShell raised SyntaxError: Non-UTF-8 code starting with '\x97', SyntaxError: unterminated string literal, NameError: name 'nl' is not defined, and TerminatorExpectedAtEndOfString.
+- Symptom: Piping multi-line Python scripts into python - in PowerShell triggered SyntaxError: Non-UTF-8 code starting with '\x97', SyntaxError: unterminated string literal, NameError: name 'nl' is not defined, and TerminatorExpectedAtEndOfString.
 - Root Cause: Non-ASCII characters (em-dash), doubled newline escapes inside triple-quoted patch strings, and long pasted blocks clipping in PowerShell.
-- Fix / Workaround: Used ASCII-safe patch scripts, chr(10) line breaks, and ast.parse(...) syntax validation before writing pipeline/assemble.py.
-- Takeaway: Keep PowerShell-invoked Python patch scripts ASCII-only and syntax-checked with ast.parse before saving.
+- Fix / Workaround: Used ASCII-safe patch scripts, chr(10) line breaks, and ast.parse(...) validation before writing pipeline/assemble.py.
+- Takeaway: Keep PowerShell-piped Python scripts ASCII-safe and syntax-checked with ast.parse before saving.
 Failure 12: Background Music Dips Across Shot Transitions
 - Stage / Script: Video Assembly (pipeline/assemble.py)
 - Symptom: Background music experienced audible dips or interruptions across shot boundaries during assembly.
-- Root Cause: Per-clip music slicing and fade-outs interacted with clip joins instead of running a continuous music bed across the stitched timeline.
-- Fix / Workaround: Updated pipeline/assemble.py to render per-shot clips with narration and subtle room bed first, blend video with xfade and concatenate audio with concat, and mix the background music track continuously over the full duration with a single fade-out at the end.
-- Takeaway: Mix continuous background music across the stitched timeline after clip joining rather than per clip.
-Failure 13: Question-Mark Placeholders ("???") in Burned Amharic Subtitles from shot_05 to shot_10
+- Root Cause: Per-clip music slicing and fade-outs interacted with clip joins instead of running a continuous music track across the stitched timeline.
+- Fix / Workaround: Updated pipeline/assemble.py to render per-shot clips with narration and subtle room bed first, blend video with xfade and concatenate audio with concat, and mix background music continuously across the full duration with a single fade-out at the end.
+- Takeaway: Mix continuous background music across the stitched timeline rather than per clip.
+Failure 13: Burned Amharic Subtitle Rendering Glitches ("???") Starting at shot_05
 - Stage / Script: Subtitle Generation & Burn-In (storyboard.json / pipeline/assemble.py)
-- Symptom: Burned-in Amharic subtitles rendered as literal question marks ("???") starting at shot_05 through shot_10.
-- Root Cause: narration_am entries for shot_05 through shot_10 contained literal ? characters in storyboard.json, and Amharic subtitle rendering continued to fail on those shots.
-- Fix / Workaround: Updated subtitle assembly in pipeline/assemble.py to output English subtitles (subtitles_en) or omit --burn-subs when clean visuals are desired, preserving existing narration audio files.
-- Takeaway: Audit storyboard text fields for ? placeholders before burning subtitles, and keep an English-only or subtitle-free fallback ready near submission deadlines.
+- Symptom: Burned-in Amharic subtitles rendered as question marks ("???") from shot_05 through shot_10.
+- Root Cause: narration_am for shot_05 through shot_10 contained ? placeholders in storyboard.json, and Amharic subtitle burn-in continued to fail on those shots.
+- Fix / Workaround: Updated pipeline/assemble.py to use English subtitles (subtitles_en) or omit --burn-subs when clean visuals are preferred, leaving narration WAV files intact.
+- Takeaway: Check storyboard text for ? placeholders before burning subtitles, and keep an English-only or subtitle-free fallback ready near deadlines.
+-------------------
