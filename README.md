@@ -4,10 +4,10 @@ A reproducible AI heritage short film pipeline turning `storyboard.json` into a 
 
 ## Deliverables & Links
 
-* **Vertical Film (`9:16`, `1080x1920`):** https://drive.google.com/file/d/1iyVx-__rUDjdbtrScxuMhx_wwjPE_5aG/view?usp=drive_link
-* **Horizontal Film (`16:9`, `1920x1080`):** https://drive.google.com/file/d/1x9-hEWhuYaDTGoOUCjcbBElUlndV1VRU/view?usp=drive_link
+* **Vertical Film (`9:16`, `1080x1920`):** https://drive.google.com/file/d/1IAa7yfMDjEAqMu5gDHo_Iq7EOeAMH5Ip/view?usp=drive_link
+* **Horizontal Film (`16:9`, `1920x1080`):** https://drive.google.com/file/d/1wGcwO2nrftp2tMvIcqCC_r64GAeiBUgQ/view?usp=drive_link
 * **Walkthrough Video (<= 5 min):** https://www.loom.com/share/6bde1feff5a44896b98fb13e87bfdcf6
-* **LinkedIn Post:** https://lnkd.in/p/dT_DDfgm
+* **LinkedIn Post:** https://lnkd.in/p/d9CtHZH8
 ## Subject & Creative Overview
 
 * **Subject:** Emebet Bijigdu Mode, Governor of Guduru Malole Warada in Wellega Awraja, remembered in family and regional history for leadership, generosity, traditional regalia (*Kaba*, *Zinar*, pistol), and a silver-chained mule.
