@@ -35,18 +35,6 @@ Failure 6: winget Download Timeout (InternetReadFile() failed. 0x80072ee2)
 - Root Cause: Network timeout or interrupted connection in winget's built-in downloader while retrieving the large release archive from GitHub.
 - Fix / Workaround: Download the FFmpeg release archive directly via browser or curl with retry/resumable transfer, extract ffmpeg.exe to a local folder (such as C:\ffmpeg), and add its bin directory to PATH.
 - Takeaway: Keep a direct download fallback ready when winget times out on large external release archives.
-Failure 7: PATH Refresh & Subprocess Execution Quirks After Manual FFmpeg Setup
-- Stage / Script: Environment Setup & Phase 1 Radio Cut (pipeline/radio_cut.py)
-- Symptom: After extracting ffmpeg.exe to a local folder, existing shells or scripts still could not resolve ffmpeg until PATH was refreshed consistently across sessions.
-- Root Cause: Windows environment variable changes do not automatically propagate into already-open PowerShell sessions.
-- Fix / Workaround: Reopened PowerShell or updated $env:Path in the active session and verified ffmpeg -version before running pipeline/radio_cut.py.
-- Takeaway: Always verify ffmpeg -version in the active terminal session before running media stages.
-Failure 8: Storyboard Schema & Encoding Mismatches Across Stage Runs
-- Stage / Script: Storyboard Validation & Pipeline Scripts (storyboard.json / pipeline/common.py)
-- Symptom: Editing or re-running pipeline stages hit validation or text encoding friction when storyboard fields were modified between runs.
-- Root Cause: Inconsistent UTF-8 handling or unvalidated edits to shot fields in storyboard.json.
-- Fix / Workaround: Validated storyboard.json against schema/storyboard.schema.json and standardized UTF-8 read/write handling across pipeline scripts.
-- Takeaway: Validate storyboard.json against the schema after every edit and keep JSON files UTF-8 encoded.
 Failure 9: 429 RESOURCE_EXHAUSTED on gemini-3.8-flash-tts Free Tier Daily Limit (10 RPD)
 - Stage / Script: Phase 1 Narration Regeneration (pipeline/narration.py -> pipeline/radio_cut.py)
 - Symptom: After deleting cached .wav files to regenerate narration with updated storyboard text, narration.py failed on shot_03 with 429 RESOURCE_EXHAUSTED (GenerateRequestsPerDayPerProjectPerModel-FreeTier, limit 10), causing radio_cut.py to fail with Missing narration file: outputs\audio\shot_03.wav.
